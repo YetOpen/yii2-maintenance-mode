@@ -29,9 +29,12 @@ class MaintenanceQuery extends ActiveQuery
      */
     public function future()
     {
-        return $this->andWhere(['and',
-            ['>=', 'date', date('Y-m-d')],
-            ['>=', 'time_start', date('H:i:s')],
+        return $this->andWhere(['or',
+            ['>', 'date', date('Y-m-d')],
+            ['and',
+                ['date' => date('Y-m-d')],
+                ['>=', 'time_start', date('H:i:s')],
+            ],
         ]);
     }
 
