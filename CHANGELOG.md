@@ -1,3 +1,6 @@
+1.2.1
+ENH: Added a DatabaseState to handle maintenance windows via database. 
+
 1.2.0
 ENH: Added a RouteFilter, as a recommend replacement for an URIFilter (URIFilter mark as deprecated).
 

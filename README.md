@@ -156,3 +156,36 @@ php yii maintenance/enable
 ```
 php yii maintenance/disable
 ```
+
+## Set up DatabaseState
+
+Add to your console or common config file:
+
+```php
+'controllerMap' => [
+    'migrate' => [
+        'class' => 'yii\console\controllers\MigrateController',
+        'migrationNamespaces' => [
+            'brussens\maintenance\migrations',
+        ],
+    ],
+],
+```
+
+And Execute the migrations.
+
+Add to your web or common config file:
+
+```php
+'modules' => [
+    'maintenance' => [
+        'class' => 'brussens\maintenance\Module',
+        // optional: change the display format for the dates
+        'dateFormat' => 'dd/MM/yyyy',
+        // optional: change the attribute used to display the user
+        'userDisplayAttribute' => 'firstname',
+    ]
+],
+```
+
+You can now access the page to add a new maintenance window from the route `/maintenance`.
