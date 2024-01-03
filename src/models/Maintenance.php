@@ -3,10 +3,13 @@
 namespace brussens\maintenance\models;
 
 use brussens\maintenance\Module;
+use DateTime;
+use DateTimeZone;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FormatConverter;
 use yii\web\Application as WebApplication;
+use yii\web\User;
 
 /**
  * This is the model class for table "{{%maintenance}}".
@@ -19,6 +22,12 @@ use yii\web\Application as WebApplication;
  * @property int|null $created_by
  * @property int|null $updated_at
  * @property int|null $updated_by
+ *
+ * @property User $createdBy
+ * @property User $updatedBy
+ *
+ * @property string $dateTimeStart
+ * @property string $dateTimeEnd
  */
 class Maintenance extends \yii\db\ActiveRecord
 {
@@ -54,6 +63,7 @@ class Maintenance extends \yii\db\ActiveRecord
         return [
             [['date', 'time_start', 'time_end'], 'required'],
             [['date'], 'filter', 'filter' => [$this, 'formatDate'], 'when' => function() { return Yii::$app instanceof WebApplication; }],
+            [['time_start', 'time_end'], 'filter', 'filter' => [$this, 'formatTime']],
             [['date', 'time_start', 'time_end'], 'safe'],
             [['created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
         ];
@@ -99,6 +109,26 @@ class Maintenance extends \yii\db\ActiveRecord
     }
 
     /**
+     * Formats time value adding the timezone.
+     * @param $value
+     * @return string
+     * @throws \Exception
+     */
+    public function formatTime($value)
+    {
+        $userTimeZone = new DateTimeZone(Yii::$app->formatter->timeZone);
+        if(strlen($value) !== 8) {
+            $value = "$value:00";
+        }
+        $date = DateTime::createFromFormat('H:i:s', $value, $userTimeZone);
+        if($date === false) {
+            return $value;
+        }
+        $date->setTimezone(new DateTimeZone(Yii::$app->formatter->defaultTimeZone));
+        return $date->format('H:i:s');
+    }
+
+    /**
      * Returns the user's creation model.
      */
     public function getCreatedBy()
@@ -112,6 +142,22 @@ class Maintenance extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Yii::$app->user->identityClass, ['id' => 'updated_by']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateTimeStart()
+    {
+        return "$this->date $this->time_start";
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateTimeEnd()
+    {
+        return "$this->date $this->time_end";
     }
 
     /**

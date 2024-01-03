@@ -44,10 +44,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'time_start',
+                'value' => 'dateTimeStart',
                 'format' => 'time',
             ],
             [
                 'attribute' => 'time_end',
+                'value' => 'dateTimeEnd',
                 'format' => 'time',
             ],
             [

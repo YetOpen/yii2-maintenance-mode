@@ -72,6 +72,8 @@ class DefaultController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $model->time_start = Yii::$app->formatter->asTime($model->dateTimeStart, 'php:H:i:s');
+        $model->time_end = Yii::$app->formatter->asTime($model->dateTimeEnd, 'php:H:i:s');
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
